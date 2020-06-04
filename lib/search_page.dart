@@ -46,7 +46,7 @@ class SearchPage extends StatelessWidget {
                 crossAxisSpacing: 1.0),
             itemCount: snapshot.data.documents.length,
             itemBuilder: (BuildContext context, int index) {
-              return _buildListItem(snapshot.data.documents[index]);
+              return _buildListItem(context, snapshot.data.documents[index]);
             },
           );
         }
@@ -63,10 +63,17 @@ class SearchPage extends StatelessWidget {
     );
   }
 
-  Widget _buildListItem(DocumentSnapshot document) {
-    return Image.network(
-      document['photoUrl'],
-      fit: BoxFit.cover,
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => DetailPostPage(document, user))
+        );
+      },
+      child: Image.network(
+        document['photoUrl'],
+        fit: BoxFit.cover,
+      ),
     );
   }
 }
