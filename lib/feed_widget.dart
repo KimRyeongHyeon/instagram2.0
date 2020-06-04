@@ -68,7 +68,7 @@ class _FeedWidgetState extends State<FeedWidget> {
               width: 16.0,
             ),
             Text(
-              '좋아요 100개',
+              '좋아요 ${widget.document['likedUsers']?.length ?? ''}',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
             ),
           ],
