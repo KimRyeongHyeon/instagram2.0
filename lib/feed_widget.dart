@@ -1,18 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'comment_page.dart';
 
 class FeedWidget extends StatefulWidget {
-  final document = {
-    'userPhotoUrl': '',
-    'email': 'test@test.com',
-    'displayName': '더미',
-    'comment': 100,
-  };
+  final DocumentSnapshot document;
 
-//  final FirebaseUser user;
+  final FirebaseUser user;
 
-//  FeedWidget(this.document, this.user);
+  FeedWidget(this.document, this.user);
 
   @override
   _FeedWidgetState createState() => _FeedWidgetState();
@@ -37,7 +34,7 @@ class _FeedWidgetState extends State<FeedWidget> {
             backgroundImage: NetworkImage(widget.document['userPhotoUrl']),
           ),
           title: Text(
-            widget.document['email'],
+            widget.document['displayName'], //widget.document['email'],
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           trailing: Icon(Icons.more_vert),
@@ -85,7 +82,7 @@ class _FeedWidgetState extends State<FeedWidget> {
               width: 16.0,
             ),
             Text(
-              widget.document['email'],
+              widget.document['displayName'], //widget.document['email'],
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(
@@ -119,7 +116,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                     ),
                   ],
                 ),
-                Text(widget.document['lastComment']),
+                Text(widget.document['lastComment'] ?? ''),
               ],
             ),
           ),
