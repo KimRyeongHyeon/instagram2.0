@@ -147,6 +147,20 @@ class _FeedWidgetState extends State<FeedWidget> {
 
   // 좋아요
   void _like() {
+    // 기존 좋아요 리스트(배열)로 복사
+    final List likedUsers = List<String>.from(widget.document['likedUsers'] ?? []);
+
+    // 나를 추가
+    likedUsers.add(widget.user.email);
+
+    // 업데이트 할 항목을 문서로 준비
+    final updateData = {
+      'likedUsers': likedUsers
+    };
+
+    Firestore.instance.collection('post')
+      .document(widget.document.documentID)
+      .updateData(updateData);
   }
 
   // 좋아요 취소
