@@ -189,5 +189,28 @@ class _FeedWidgetState extends State<FeedWidget> {
   }
 
   // 댓글 작성
-  void _writeComment(String text) {}
+  void _writeComment(String text) {
+    final data = {
+      'writer': widget.user.displayName,
+      'comment': text
+    };
+
+    // 댓글 추가
+    Firestore.instance
+      .collection('post')
+      .document(widget.document.documentID)
+      .collection('comment')
+      .add(data);
+
+    // 마지막 댓글과 댓글 수 갱신
+    final updateData = {
+      'lastComment': text,
+      'commentCount': (widget.document['commentCount'] ?? 0) + 1
+    };
+
+    Firestore.instance
+    .collection('post')
+    .document(widget.document.documentID)
+    .updateData(updateData);
+  }
 }
