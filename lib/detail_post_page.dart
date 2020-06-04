@@ -44,14 +44,38 @@ class DetailPostPage extends StatelessWidget {
                           SizedBox(
                             width: 8,
                           ),
-                          GestureDetector(
-                            onTap: _follow,
-                            child: Text(
-                              "팔로우",
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: _followingStream(),
+                            builder: (context, snapshot) {
+                              if(!snapshot.hasData) {
+                                return Text('로딩중');
+                              }
+
+                              var data = snapshot.data.data;
+                              if(data == null
+                                  || data[document['email']] == null
+                                  || data[document['email']] == false) {
+                                return GestureDetector(
+                                  onTap: _follow,
+                                  child: Text(
+                                    "팔로우",
+                                    style: TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              }
+
+                              return GestureDetector(
+                                onTap: _unfollow,
+                                child: Text(
+                                  "언팔로우",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              );
+                            }
                           ),
                         ],
                       ),
@@ -85,25 +109,25 @@ class DetailPostPage extends StatelessWidget {
     Firestore.instance
         .collection('following')
         .document(user.email)
-        .setData({ document['email']: true });
+        .setData({ document['email']: true }, merge: true);
 
     Firestore.instance
         .collection('follower')
         .document(document['email'])
-        .setData({ user.email: true });
+        .setData({ user.email: true }, merge: true);
   }
 
   // 언팔로우
   void _unfollow() {
     Firestore.instance
-        .collection('follower')
-        .document(document['email'])
-        .setData({ user.email: false });
+        .collection('following')
+        .document(user.email)
+        .setData({ document['email']: false }, merge: true);
 
     Firestore.instance
         .collection('follower')
         .document(document['email'])
-        .setData({ user.email: false });
+        .setData({ user.email: false }, merge: true);
   }
 
   // 팔로잉 상태를 얻는 스트림
