@@ -49,7 +49,13 @@ class _FeedWidgetState extends State<FeedWidget> {
           leading: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(Icons.favorite_border),
+              widget.document['likedUsers']?.contains(widget.user.email) ??
+                      false
+                  ? GestureDetector(
+                      onTap: _unlike,
+                      child: Icon(Icons.favorite, color: Colors.red))
+                  : GestureDetector(
+                      onTap: _like, child: Icon(Icons.favorite_border)),
               SizedBox(
                 width: 8.0,
               ),
@@ -148,26 +154,39 @@ class _FeedWidgetState extends State<FeedWidget> {
   // 좋아요
   void _like() {
     // 기존 좋아요 리스트(배열)로 복사
-    final List likedUsers = List<String>.from(widget.document['likedUsers'] ?? []);
+    final List likedUsers =
+        List<String>.from(widget.document['likedUsers'] ?? []);
 
     // 나를 추가
     likedUsers.add(widget.user.email);
 
     // 업데이트 할 항목을 문서로 준비
-    final updateData = {
-      'likedUsers': likedUsers
-    };
+    final updateData = {'likedUsers': likedUsers};
 
-    Firestore.instance.collection('post')
-      .document(widget.document.documentID)
-      .updateData(updateData);
+    Firestore.instance
+        .collection('post')
+        .document(widget.document.documentID)
+        .updateData(updateData);
   }
 
   // 좋아요 취소
   void _unlike() {
+    // 기존 좋아요 리스트(배열)로 복사
+    final List likedUsers =
+    List<String>.from(widget.document['likedUsers'] ?? []);
+
+    // 나를 추가
+    likedUsers.remove(widget.user.email);
+
+    // 업데이트 할 항목을 문서로 준비
+    final updateData = {'likedUsers': likedUsers};
+
+    Firestore.instance
+        .collection('post')
+        .document(widget.document.documentID)
+        .updateData(updateData);
   }
 
   // 댓글 작성
-  void _writeComment(String text) {
-  }
+  void _writeComment(String text) {}
 }
