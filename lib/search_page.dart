@@ -64,15 +64,20 @@ class SearchPage extends StatelessWidget {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context) => DetailPostPage(document, user))
-        );
-      },
-      child: Image.network(
-        document['photoUrl'],
-        fit: BoxFit.cover,
+    return Hero(
+      tag: document.documentID,
+      child: Material(
+        child: InkWell(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => DetailPostPage(document, user))
+            );
+          },
+          child: Image.network(
+            document['photoUrl'],
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
