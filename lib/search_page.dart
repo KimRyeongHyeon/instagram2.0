@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'create_page.dart';
 import 'detail_post_page.dart';
@@ -30,16 +31,25 @@ class SearchPage extends StatelessWidget {
   Widget _buildBody(context) {
     print('search_page created');
     return Scaffold(
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 1.0,
-            mainAxisSpacing: 1.0,
-            crossAxisSpacing: 1.0),
-        itemCount: 3,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildListItem();
-        },
+      body: StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('post').snapshots(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1.0,
+                mainAxisSpacing: 1.0,
+                crossAxisSpacing: 1.0),
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _buildListItem(snapshot.data.documents[index]);
+            },
+          );
+        }
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueAccent,
@@ -53,9 +63,9 @@ class SearchPage extends StatelessWidget {
     );
   }
 
-  Widget _buildListItem() {
+  Widget _buildListItem(DocumentSnapshot document) {
     return Image.network(
-      '',
+      document['photoUrl'],
       fit: BoxFit.cover,
     );
   }
