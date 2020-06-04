@@ -33,7 +33,15 @@ class _CreatePageState extends State<CreatePage> {
 
   // 갤러리에서 사진 가져오기
   Future _getImage() async {
+    var image = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 640,
+      maxHeight: 480
+    );
 
+    setState(() {
+      _image = image;
+    });
   }
 
   @override
